@@ -1,0 +1,36 @@
+.App {
+    text-align: center;
+}
+
+.message {
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.message-text {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 14px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.message.bot {
+    text-align: left;
+}
+
+.message-text.bot {
+    background-color: #f0f0f0;
+    color: #333;
+    border-bottom-left-radius: 2px;
+}
+
+.message.user {
+    text-align: right;
+}
+
+.message-text.user {
+    background-color: #0b93f6;
+    color: #fff;
+    border-bottom-right-radius: 2px;
+}
