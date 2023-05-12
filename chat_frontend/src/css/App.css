@@ -1,36 +1,62 @@
 .App {
-    text-align: center;
+  text-align: center;
 }
 
 .message {
-    text-align: left;
-    margin-bottom: 8px;
+  text-align: left;
+  margin-bottom: 8px;
 }
 
 .message-text {
-    display: inline-block;
-    padding: 8px 12px;
-    border-radius: 14px;
-    max-width: 80%;
-    word-wrap: break-word;
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 14px;
+  max-width: 80%;
+  word-wrap: break-word;
 }
 
 .message.bot {
-    text-align: left;
+  text-align: left;
 }
 
 .message-text.bot {
-    background-color: #f0f0f0;
-    color: #333;
-    border-bottom-left-radius: 2px;
+  background-color: #f0f0f0;
+  color: #333;
+  border-bottom-left-radius: 2px;
 }
 
 .message.user {
-    text-align: right;
+  text-align: right;
 }
 
 .message-text.user {
-    background-color: #0b93f6;
-    color: #fff;
-    border-bottom-right-radius: 2px;
+  background-color: #0b93f6;
+  color: #fff;
+  border-bottom-right-radius: 2px;
+}
+
+.message-input-container {
+  background-color: #f0f0f0;
+  padding: 0.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 600px; /* This value should match the maxWidth of your Container component */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-bottom: 1rem;
+}
+
+.chat-app-container {
+  margin-top: 24px;
+  min-height: 100vh;
+  position: relative;
 }
