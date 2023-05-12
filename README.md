@@ -62,7 +62,7 @@ If your backend server is running correctly, you should see something like this:
 **Important**: In order to run the LLM, set your Open AI API key [here](https://github.com/virattt/chat_app/blob/main/backend/project/settings.py#L146).
 
 ## 3. Run the frontend app
-In a new terminal window (or tab), navigate to the `frontend` directory:
+In a new Terminal window (or tab), navigate to the `frontend` directory:
 ```
 cd ~/path_to/chat_app/frontend
 ```
