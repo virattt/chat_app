@@ -1,10 +1,10 @@
-# LLM-Powered Chat Application 🚀
+# LLM-Powered Chat Application
 This repository contains all of the starter code needed to run an LLM-powered chat app on your local machine:
 1. Django backend
 2. React TypeScript frontend
 3. LangChain Agents and LLMs
 
-## Getting Started 🏁
+## Getting Started 🚀
 To run the chat app, you need to:
 
 1. Clone this GitHub repo
