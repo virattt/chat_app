@@ -1,10 +1,10 @@
 # Overview
-A chat application that uses LangChain, Django, and React Typescript.
+This repository contains all of the starter code needed to run an LLM-powered chat app on your local machine.  
 
-This repository provides starter code for you to be able to create your own GPT-powered chat application from scratch using:
-1. Django for your backend
-2. React for your frontend
-3. LangChain for accessing GPT
+The code in this repository uses:
+1. Django for the backend
+2. React for the frontend
+3. LangChain for running the LLM(s)
 
 # Run the App
 To run the chat app, you need to:
