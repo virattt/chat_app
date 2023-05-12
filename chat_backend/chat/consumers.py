@@ -1,12 +1,10 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
 
-import json
-import openai
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.conf import settings
+from langchain.agents import load_tools, initialize_agent, AgentType
+from langchain.chat_models import ChatOpenAI
 
-openai.api_key = settings.OPENAI_API_KEY
+from project import settings
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -20,22 +18,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
-        # Forward the message to the OpenAI Chat API
-        response = await self.forward_message_to_openai(message)
+        # Forward the message to LangChain
+        response = await self.message_agent(message)
 
         # Send the response from the OpenAI Chat API to the frontend client
         await self.send(text_data=json.dumps({'message': response}))
 
-    async def forward_message_to_openai(self, message):
-        # You can customize the parameters based on the OpenAI Chat API documentation
-        prompt = f"User: {message}\nAssistant:"
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=prompt,
-            max_tokens=150,
-            n=1,
-            stop=None,
-            temperature=0.5,
-        )
+    async def message_agent(self, message):
+        # Define the LLM that the tools will use
+        llm = ChatOpenAI(temperature=0, openai_api_key=settings.openai_api_key, streaming=True)
 
-        return response.choices[0].text.strip()
+        # Load the Tools that the Agent will use
+        tools = load_tools(["llm-math"], llm=llm)
+
+        # Initialize the Agent
+        agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+        # Interact with the Agent
+        response = agent.run(message)
+        return response
