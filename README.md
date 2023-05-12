@@ -4,7 +4,7 @@ This repository contains all of the starter code needed to run an LLM-powered ch
 2. React TypeScript frontend
 3. LangChain Agents and LLMs
 
-# Run the App
+# Getting Started
 To run the chat app, you need to:
 
 1. Clone this GitHub repo
@@ -48,8 +48,6 @@ Then, install the necessary libraries:
 pip install -r requirements.txt
 ```
 
-**You are now ready to run the server!**
-
 In your terminal, type the following to run the backend server:
 ```
 daphne project.asgi:application
@@ -57,12 +55,6 @@ daphne project.asgi:application
 
 If your backend server is running correctly, you should see something like this:
 ```
-Note: NumExpr detected 12 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
-NumExpr defaulting to 8 threads.
-Starting server at tcp:port=8000:interface=127.0.0.1
-HTTP/2 support not enabled (install the http2 and tls Twisted extras)
-Configuring endpoint tcp:port=8000:interface=127.0.0.1
-Listening on TCP address 127.0.0.1:8000
 "WSCONNECTING /ws/chat/" - -
 "WSCONNECT /ws/chat/" - -
 ```
