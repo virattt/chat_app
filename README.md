@@ -9,10 +9,10 @@ To run the chat app, you need to:
 
 1. Clone this GitHub repo
 2. Run the backend server
-3. Run the frontend client
+3. Run the frontend app
 
 ## 1. Clone this GitHub repo
-To clone this GitHub repo, open up your Terminal (MacOS) or Bash terminal (Windows) and navigate to wherever you want to save this repo on your local machine.  Then, run 
+To clone this GitHub repo, open up your Terminal (MacOS) or Bash terminal (Windows) and navigate to wherever you want to save this repo on your local machine.  Then, run: 
 
 ```
 git clone https://github.com/virattt/chat_app.git
@@ -24,10 +24,10 @@ Make sure that you have git installed ([instructions](https://github.com/git-gui
 Once you have this `chat_app` project cloned locally, navigate to the `backend` directory:
 
 ```
-cd ~/path_to_this_repo/chat_app/backend
+cd ~/path_to/chat_app/backend
 ```
 
-Then, create and activate a virtual environment:
+Create and activate a virtual environment:
 
 ```
 python3 -m venv myenv
@@ -43,12 +43,12 @@ For Windows:
 myenv\Scripts\activate
 ```
 
-Then, install the necessary libraries:
+Install the necessary libraries:
 ```
 pip install -r requirements.txt
 ```
 
-In your terminal, type the following to run the backend server:
+Run the backend server:
 ```
 daphne project.asgi:application
 ```
@@ -61,20 +61,20 @@ If your backend server is running correctly, you should see something like this:
 
 **Important**: In order to run the LLM, set your Open AI API key [here](https://github.com/virattt/chat_app/blob/main/backend/project/settings.py#L146).
 
-## 3. Run the frontend client
+## 3. Run the frontend app
 In a new terminal window (or tab), navigate to the `frontend` directory:
 ```
-cd ~/path_to_this_repo/chat_app/frontend
+cd ~/path_to/chat_app/frontend
 ```
 
 Make sure that you have Node and npm installed (MacOS [instructions](https://nodejs.org/en/download/package-manager#macos) and Windows [instructions](https://nodejs.org/en/download/package-manager#windows-1))
 
-Then, install the necessary packages:
+Install the necessary packages:
 ```
 npm install
 ```
 
-Finally, run the frontend app:
+Run the frontend app:
 ```
 npm start
 ```
