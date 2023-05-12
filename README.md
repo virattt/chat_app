@@ -1,4 +1,4 @@
-# Chat App, powered by LLMs
+# Chat App
 A chat application that uses LangChain, Django, and React Typescript.
 
 This repository provides starter code for you to be able to create your own GPT-powered chat application from scratch using:
