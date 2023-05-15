@@ -87,5 +87,12 @@ npm start
 
 If successful, your browser should open and navigate to http://localhost:3000/.  The chat app should load automatically.
 
+## Run with Docker
+To run this project with docker, you must have docker installed. Then run the entire app:
+
+```
+docker-compose up
+```
+
 ## Troubleshooting ⚠️
 If you encounter any issues, send me a message on [Twitter](https://twitter.com/virat)!
