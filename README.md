@@ -48,20 +48,8 @@ Install the necessary libraries:
 pip install -r requirements.txt
 ```
 
-Create a `.env` file by copying `.env.example`. Input your [OpenAI Key](https://platform.openai.com/account/api-keys) in the new file.
-
-For MacOS/Linux:
-```
-cp .env.example .env
-```
-
-For Windows:
-```
-copy .env.example .env
-```
-
 Make sure that you have Redis installed. You can find instructions [here](https://redis.io/docs/getting-started/installation/).
-Run redis:
+Once installed, run redis:
 ```
 redis-server
 ```
@@ -76,6 +64,8 @@ If your backend server is running correctly, you should see something like this:
 "WSCONNECTING /ws/chat/" - -
 "WSCONNECT /ws/chat/" - -
 ```
+
+**Important**: In order to run the LLM, set your Open AI API key [here](https://github.com/virattt/chat_app/blob/main/backend/.env#L1).
 
 ### 3. Run the frontend app 💻
 In a new Terminal window (or tab), navigate to the `frontend` directory:
