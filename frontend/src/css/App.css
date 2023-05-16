@@ -51,7 +51,7 @@
 .messages-container {
   flex-grow: 1;
   overflow-y: auto;
-  padding-bottom: 1rem;
+  padding-bottom: 10rem;
 }
 
 .chat-app-container {
