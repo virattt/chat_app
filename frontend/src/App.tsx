@@ -33,10 +33,10 @@ const App: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const chatSocket = useRef<ReconnectingWebSocket | null>(null);
-
+  const chatId = 1 // TODO (virat) make this dynamic
 
   useEffect(() => {
-    chatSocket.current = new ReconnectingWebSocket('ws://localhost:8000/ws/chat/');
+    chatSocket.current = new ReconnectingWebSocket(`ws://localhost:8000/ws/chat/${chatId}/`);
 
     chatSocket.current.onmessage = (event) => {
       setIsTyping(false);
@@ -62,6 +62,7 @@ const App: React.FC = () => {
     chatSocket.current?.send(
       JSON.stringify({
         message: input,
+        chat_id: chatId,
       })
     );
 
