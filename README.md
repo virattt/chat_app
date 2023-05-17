@@ -87,5 +87,9 @@ npm start
 
 If successful, your browser should open and navigate to http://localhost:3000/.  The chat app should load automatically.
 
+## The Chat App UX 🤖
+_As of May 17, 2023_
+<img width="1680" alt="Screen Shot 2023-05-17 at 4 52 27 PM" src="https://github.com/virattt/chat_app/assets/901795/2a68d8dd-5d81-4b6f-b815-7e2c22114ec2">
+
 ## Troubleshooting ⚠️
 If you encounter any issues, send me a message on [Twitter](https://twitter.com/virat)!
