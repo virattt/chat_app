@@ -29,5 +29,4 @@ export const ChatBox: React.FC<ChatBoxProps> = ({messages, isLoading}) => {
 const MessageList = styled.div`
   flex-grow: 1;
   overflow-y: auto;
-  // padding: 10px;
 `;
