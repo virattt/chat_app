@@ -81,14 +81,22 @@ const Input = styled.input`
   border-radius: 3px;
   padding: 10px;
   margin-right: 10px;
+  &:focus,
+  &:active {
+    border-color: #1C1C1C;
+    outline: none;
+  }
 `;
 
 const Button = styled.button`
   padding: 10px 20px;
   border: none;
-  background-color: #007bff;
+  background-color: #1C1C1C;
   color: white;
   cursor: pointer;
   border-radius: 3px;
   font-size: 1em;
+  &:hover {
+    background-color: #333333; /* Change this to the desired lighter shade */
+  }
 `;
