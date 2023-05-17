@@ -1,9 +1,9 @@
 // ChatApp.tsx
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Sidebar } from './Sidebar';
-import { ChatBox } from './ChatBox';
-import { ChatInput } from "./ChatInput";
+import { Sidebar } from './components/chat/Sidebar';
+import { ChatBox } from './components/chat/ChatBox';
+import { ChatInput } from "./components/chat/ChatInput";
 import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
 
@@ -12,7 +12,7 @@ type Message = {
   content: string;
 };
 
-export const ChatApp = () => {
+export const App = () => {
   // TODO - make chatId dynamic
   const [currentChatId, setCurrentChatId] = useState<string | null>("1");
   const [messages, setMessages] = useState<Message[]>([]);

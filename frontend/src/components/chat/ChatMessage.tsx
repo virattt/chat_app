@@ -10,11 +10,9 @@ type MessageProps = {
 };
 
 const Container = styled.div<{ isUser: boolean }>`
-  background-color: ${({isUser}) => (isUser ? 'white' : '#ddd')};
-  margin: 10px;
+  background-color: ${({isUser}) => (isUser ? 'white' : '#F5F5F5')};
   padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 `;
 
 const Sender = styled.p`
@@ -24,7 +22,7 @@ const Sender = styled.p`
 export const ChatMessage: React.FC<MessageProps> = ({sender, content, isUser}) => (
   <Container isUser={isUser}>
     <Sender>{sender}</Sender>
-    {content.split('\n').map((line, index) => (
+    {content.toString().split('\n').map((line, index) => (
       <p key={index}>{line}</p>
     ))}
   </Container>

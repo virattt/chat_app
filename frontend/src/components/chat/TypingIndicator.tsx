@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/TypingIndicator.css'
+import '../../css/chat/TypingIndicator.css'
 
 interface TypingIndicatorProps {
   isTyping: boolean;
