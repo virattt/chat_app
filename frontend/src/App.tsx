@@ -1,132 +1,75 @@
+// ChatApp.tsx
+
 import React, { useEffect, useRef, useState } from 'react';
-import './css/App.css';
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Sidebar } from './Sidebar';
+import { ChatBox } from './ChatBox';
+import { ChatInput } from "./ChatInput";
+import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
-import MultilineText from "./components/MultilineText";
-import { styled } from '@mui/system';
-import TypingIndicator from "./components/TypingIndicator";
 
+type Message = {
+  sender: string;
+  content: string;
+};
 
-interface Message {
-  text: string;
-  isUser: boolean;
-}
-
-const CustomTextField = styled(TextField)({
-  width: '100%',
-  '& .MuiInputBase-root': {
-    height: '100%',
-    borderRadius: '1rem',
-    backgroundColor: '#fff',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  '& .MuiOutlinedInput-notchedOutline': {
-    border: 'none',
-  },
-});
-
-const App: React.FC = () => {
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+export const ChatApp = () => {
+  // TODO - make chatId dynamic
+  const [currentChatId, setCurrentChatId] = useState<string | null>("1");
   const [messages, setMessages] = useState<Message[]>([]);
-  const chatSocket = useRef<ReconnectingWebSocket | null>(null);
-  const chatId = 1 // TODO (virat) make this dynamic
+  const webSocket = useRef<ReconnectingWebSocket | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Setup websocket connection when chatId changes
+  useEffect(() => {
+    if (currentChatId) {
+      webSocket.current = new ReconnectingWebSocket(`ws://localhost:8000/ws/chat/${currentChatId}/`);
+      webSocket.current.onmessage = (event) => {
+        setLoading(false)
+        const data = JSON.parse(event.data);
+        const newMessage = {sender: 'AI', content: data['message']};
+        handleNewMessage(newMessage);
+      };
+
+      webSocket.current.onclose = () => {
+        console.error('Chat socket closed unexpectedly');
+      };
+    }
+    return () => {
+      webSocket.current?.close();
+    };
+  }, [currentChatId]);
 
   useEffect(() => {
-    chatSocket.current = new ReconnectingWebSocket(`ws://localhost:8000/ws/chat/${chatId}/`);
+    // TODO: Fetch previous messages for the current chat id and update the state.
+  }, [currentChatId]);
 
-    chatSocket.current.onmessage = (event) => {
-      setIsTyping(false);
+  const handleChatSelect = (chatId: string) => {
+    setCurrentChatId(chatId);
+  };
 
-      const data = JSON.parse(event.data);
-      const message = data['message'];
-
-      setMessages((prevMessages) => [...prevMessages, {text: message, isUser: false}]);
-    };
-
-    chatSocket.current.onclose = () => {
-      console.error('Chat socket closed unexpectedly');
-    };
-
-    return () => {
-      chatSocket.current?.close();
-    };
-  }, []);
-
-  const sendMessage = () => {
-    if (input.trim() === '') return;
-
-    chatSocket.current?.send(
-      JSON.stringify({
-        message: input,
-        chat_id: chatId,
-      })
-    );
-
-    setMessages([...messages, {text: input, isUser: true}]);
-    setInput('');
-    setIsTyping(true);
+  const handleNewMessage = (message: Message) => {
+    setMessages(prevMessages => [...prevMessages, message]);
   };
 
   return (
-    <div className="chat-app-container">
-      <Container maxWidth="sm">
-        <Typography variant="h4" gutterBottom>
-          Chat App
-        </Typography>
-        <div className="messages-container">
-          <Box my={2}>
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`message ${msg.isUser ? 'user' : 'bot'}`}>
-                <MultilineText
-                  variant="body1"
-                  className={`message-text ${msg.isUser ? 'user' : 'bot'}`}
-                  text={msg.text}
-                />
-              </div>
-            ))}
-            <TypingIndicator isTyping={isTyping}/>
-          </Box>
-        </div>
-        <div className="message-input-container">
-          <Grid container spacing={1} alignItems="stretch">
-            <Grid item xs={9}>
-              <CustomTextField
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    sendMessage();
-                  }
-                }}
-                placeholder="Type your message..."
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={sendMessage}
-                sx={{
-                  height: '100%',
-                  width: '100%',
-                  borderRadius: '1rem',
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0,
-                  backgroundColor: '#007aff',
-                }}
-              >
-                Send
-              </Button>
-            </Grid>
-          </Grid>
-        </div>
-      </Container>
-    </div>
+    <AppContainer>
+      <Sidebar onChatSelect={handleChatSelect}/>
+      <ChatContainer>
+        <ChatBox messages={messages} isLoading={loading}/>
+        <ChatInput onNewMessage={handleNewMessage} webSocket={webSocket} chatId={currentChatId} setLoading={setLoading}/>
+      </ChatContainer>
+    </AppContainer>
   );
 };
 
-export default App;
+const AppContainer = styled.div`
+  display: flex;
+  height: 100vh;
+`;
+
+const ChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
