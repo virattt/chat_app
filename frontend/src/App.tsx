@@ -6,20 +6,16 @@ import { ChatBox } from './components/chat/ChatBox';
 import { ChatInput } from "./components/chat/ChatInput";
 import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
-
-type Message = {
-  sender: string;
-  content: string;
-};
+import { Message } from "./data/Message";
+import { ToastContainer } from 'react-toastify';
 
 export const App = () => {
-  // TODO - make chatId dynamic
-  const [currentChatId, setCurrentChatId] = useState<string | null>("1");
+  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const webSocket = useRef<ReconnectingWebSocket | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Setup websocket connection when chatId changes
+  // Set up websocket connection when currentChatId changes
   useEffect(() => {
     if (currentChatId) {
       webSocket.current = new ReconnectingWebSocket(`ws://localhost:8000/ws/chat/${currentChatId}/`);
@@ -33,17 +29,21 @@ export const App = () => {
       webSocket.current.onclose = () => {
         console.error('Chat socket closed unexpectedly');
       };
+
+      // Fetch chat messages for currentChatId
+      fetch(`http://localhost:8000/api/chats/${currentChatId}/messages/`)
+        .then(response => response.json())
+        .then(data => {
+          setMessages(data)
+        });
     }
     return () => {
       webSocket.current?.close();
     };
   }, [currentChatId]);
 
-  useEffect(() => {
-    // TODO: Fetch previous messages for the current chat id and update the state.
-  }, [currentChatId]);
-
-  const handleChatSelect = (chatId: string) => {
+  const handleChatSelect = (chatId: string | null) => {
+    if (currentChatId === chatId) return; // Prevent unnecessary re-renders.
     setCurrentChatId(chatId);
   };
 
@@ -53,10 +53,19 @@ export const App = () => {
 
   return (
     <AppContainer>
-      <Sidebar onChatSelect={handleChatSelect}/>
+      <Sidebar
+        onChatSelect={handleChatSelect}
+        selectedChatId={currentChatId}
+      />
       <ChatContainer>
+        <ToastContainer/>
         <ChatBox messages={messages} isLoading={loading}/>
-        <ChatInput onNewMessage={handleNewMessage} webSocket={webSocket} chatId={currentChatId} setLoading={setLoading}/>
+        <ChatInput
+          onNewMessage={handleNewMessage}
+          webSocket={webSocket}
+          chatId={currentChatId}
+          setLoading={setLoading}
+        />
       </ChatContainer>
     </AppContainer>
   );

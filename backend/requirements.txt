@@ -17,6 +17,7 @@ daphne==4.0.0
 dataclasses-json==0.5.7
 Django==4.2
 django-cors-headers==3.14.0
+djangorestframework==3.14.0
 frozenlist==1.3.3
 greenlet==2.0.2
 hyperlink==21.0.0

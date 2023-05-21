@@ -3,11 +3,9 @@
 import React, { MutableRefObject, useState } from 'react';
 import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
-
-type Message = {
-  sender: string;
-  content: string;
-};
+import { Message } from "../../data/Message";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type ChatInputProps = {
   onNewMessage: (message: Message) => void;
@@ -17,57 +15,50 @@ type ChatInputProps = {
 };
 
 export const ChatInput: React.FC<ChatInputProps> = ({onNewMessage, webSocket, chatId, setLoading}) => {
-  const [message, setMessage] = useState('');
+    const [message, setMessage] = useState('');
 
-  // // Setup websocket connection when chatId changes
-  // useEffect(() => {
-  //   if (chatId) {
-  //     ws.current = new ReconnectingWebSocket(`ws://localhost:8000/ws/chat/${chatId}/`);
-  //     ws.current.onmessage = (event) => {
-  //       const message = JSON.parse(event.data);
-  //       onNewMessage(message);
-  //     };
-  //
-  //     ws.current.onclose = () => {
-  //       console.error('Chat socket closed unexpectedly');
-  //     };
-  //   }
-  //   return () => {
-  //     ws.current?.close();
-  //   };
-  // }, [chatId, onNewMessage]);
+    const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+      if (message.trim() === '') return;
 
-    if (message.trim() === '') return;
+      // If there is no chatId, create a new chat.
+      if (!chatId) {
+        toast.error('Please select or create a new Chat to send a message.');
+        return;
+      } else {
+        // If there is a chatId, just send the message.
+        sendWebSocketMessage(chatId);
+      }
+    }
 
-    webSocket.current?.send(
-      JSON.stringify({
-        message: message,
-        chat_id: chatId,
-      })
+    // Function for sending a message through the WebSocket connection.
+    const sendWebSocketMessage = (id: string) => {
+      webSocket.current?.send(
+        JSON.stringify({
+          message: message,
+          chat_id: id,
+        })
+      );
+      const newMessage = {sender: 'User', content: message};
+      onNewMessage(newMessage);  // Add this line
+      setMessage('');
+      setLoading(true); // Set loading to true when sending a message
+    };
+
+    return (
+      <Form onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type a message..."
+        />
+        <Button type="submit">Send</Button>
+      </Form>
     );
-    // setMessages([...messages, {text: input, isUser: true}]);
-    const newMessage = {sender: 'User', content: message};
-    onNewMessage(newMessage);  // Add this line
-    setMessage('');
-    setLoading(true); // Set loading to true when sending a message
-    // setIsTyping(true);
-  };
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <Input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type a message..."
-      />
-      <Button type="submit">Send</Button>
-    </Form>
-  );
-};
+  }
+;
 
 const Form = styled.form`
   display: flex;

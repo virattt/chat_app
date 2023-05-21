@@ -19,7 +19,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({messages, isLoading}) => {
   return (
     <MessageList>
       {messages.map((message, index) => (
-        <ChatMessage key={index} sender={message.sender} content={message.content} isUser={message.sender === 'User'}/>
+        <ChatMessage key={index} sender={message.sender} content={message.content} isUser={message.sender.toLowerCase() === 'user'}/>
       ))}
       <TypingIndicator isTyping={isLoading}/>
     </MessageList>
