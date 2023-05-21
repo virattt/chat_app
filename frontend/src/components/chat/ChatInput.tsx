@@ -22,13 +22,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({onNewMessage, webSocket, ch
 
       if (message.trim() === '') return;
 
-      // If there is no chatId, create a new chat.
-      if (!chatId) {
-        toast.error('Please select or create a new Chat to send a message.');
-        return;
-      } else {
+      if (chatId) {
         // If there is a chatId, just send the message.
         sendWebSocketMessage(chatId);
+      } else {
+        // If there is no chatId, create a new chat.
+        toast.error('Select or create a Chat first.');
       }
     }
 
