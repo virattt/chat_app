@@ -11,11 +11,11 @@ type Chat = {
 };
 
 type SidebarProps = {
-  onChatSelect: (chatId: string | null) => void;
+  onChatSelected: (chatId: string | null) => void;
   selectedChatId: string | null; // Add this prop.
 };
 
-export const Sidebar: React.FC<SidebarProps> = ({onChatSelect, selectedChatId}) => {
+export const Sidebar: React.FC<SidebarProps> = ({onChatSelected, selectedChatId}) => {
   const [chats, setChats] = useState<Chat[]>([]);
 
   // Fetch chats when the selectedChatId changes
@@ -34,15 +34,13 @@ export const Sidebar: React.FC<SidebarProps> = ({onChatSelect, selectedChatId}) 
   const createChat = () => {
     fetch('http://localhost:8000/api/chats/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({name: 'New Chat'})  // Adjust this as necessary.
     })
       .then(response => response.json())
       .then(newChat => {
         setChats(prevChats => [...prevChats, newChat]);
-        onChatSelect(newChat.id);  // Select the new chat automatically
+        onChatSelected(newChat.id);  // Select the new chat automatically
       });
   };
 
@@ -55,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({onChatSelect, selectedChatId}) 
         setChats(chats.filter(chat => chat.id !== chatId));
         // If the deleted chat was the currently selected one, nullify the selection
         if (chatId === selectedChatId) {
-          onChatSelect(null);
+          onChatSelected(null);
         }
       })
       .catch((error) => {
@@ -69,8 +67,8 @@ export const Sidebar: React.FC<SidebarProps> = ({onChatSelect, selectedChatId}) 
       {chats.map((chat) => (
         <ChatRow
           key={chat.id}
-          onClick={() => onChatSelect(chat.id)}
-          isSelected={chat.id === selectedChatId} // Pass this as a prop.
+          onClick={() => onChatSelected(chat.id)}
+          isSelected={chat.id === selectedChatId}
         >
           Chat {chat.id}
           <FontAwesomeIcon icon={faTrash} onClick={(e) => {
@@ -93,9 +91,9 @@ const SidebarContainer = styled.div`
 const ChatRow = styled.div<{ isSelected?: boolean }>`
   padding: 10px;
   cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? '#333' : 'transparent')};
+  background-color: ${(props) => (props.isSelected ? '#4c4c4c' : 'transparent')};
   &:hover {
-    background-color: #333;
+    background-color: #3f3f3f;
   }
   color: white;
   font-size: 1em;
@@ -113,6 +111,6 @@ const Button = styled.button`
   border-color: #fff
   font-size: 1em;
   &:hover {
-    background-color: #333333; /* Change this to the desired lighter shade */
+    background-color: #3f3f3f;
   }
 `;

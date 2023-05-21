@@ -8,13 +8,13 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 type ChatInputProps = {
-  onNewMessage: (message: Message) => void;
+  onNewUserMessage: (message: Message) => void;
   setLoading: (isLoading: boolean) => void;
   webSocket: MutableRefObject<ReconnectingWebSocket | null>;
   chatId: string | null;
 };
 
-export const ChatInput: React.FC<ChatInputProps> = ({onNewMessage, webSocket, chatId, setLoading}) => {
+export const ChatInput: React.FC<ChatInputProps> = ({onNewUserMessage, webSocket, chatId, setLoading}) => {
     const [message, setMessage] = useState('');
 
     const handleSubmit = (event: React.FormEvent) => {
@@ -40,8 +40,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({onNewMessage, webSocket, ch
         })
       );
       const newMessage = {sender: 'User', content: message};
-      onNewMessage(newMessage);  // Add this line
-      setMessage('');
+      onNewUserMessage(newMessage); // Notify any listeners (e.g. App.tsx) that a new message was sent
+      setMessage(''); // Clear the input message
       setLoading(true); // Set loading to true when sending a message
     };
 

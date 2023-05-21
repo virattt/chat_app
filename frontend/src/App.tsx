@@ -23,45 +23,52 @@ export const App = () => {
         setLoading(false)
         const data = JSON.parse(event.data);
         const newMessage = {sender: 'AI', content: data['message']};
-        handleNewMessage(newMessage);
+        onNewUserMessage(newMessage);
       };
 
       webSocket.current.onclose = () => {
         console.error('Chat socket closed unexpectedly');
       };
-
       // Fetch chat messages for currentChatId
-      fetch(`http://localhost:8000/api/chats/${currentChatId}/messages/`)
-        .then(response => response.json())
-        .then(data => {
-          setMessages(data)
-        });
+      fetchMessages(currentChatId)
     }
     return () => {
       webSocket.current?.close();
     };
   }, [currentChatId]);
 
-  const handleChatSelect = (chatId: string | null) => {
+  const onChatSelected = (chatId: string | null) => {
     if (currentChatId === chatId) return; // Prevent unnecessary re-renders.
+    if (chatId == null) {
+      // Clear messages if no chat is selected
+      setMessages([])
+    }
     setCurrentChatId(chatId);
   };
 
-  const handleNewMessage = (message: Message) => {
+  const onNewUserMessage = (message: Message) => {
     setMessages(prevMessages => [...prevMessages, message]);
   };
+
+  const fetchMessages = (currentChatId: string | null) => {
+    fetch(`http://localhost:8000/api/chats/${currentChatId}/messages/`)
+      .then(response => response.json())
+      .then(data => {
+        setMessages(data)
+      });
+  }
 
   return (
     <AppContainer>
       <Sidebar
-        onChatSelect={handleChatSelect}
+        onChatSelected={onChatSelected}
         selectedChatId={currentChatId}
       />
       <ChatContainer>
         <ToastContainer/>
         <ChatBox messages={messages} isLoading={loading}/>
         <ChatInput
-          onNewMessage={handleNewMessage}
+          onNewUserMessage={onNewUserMessage}
           webSocket={webSocket}
           chatId={currentChatId}
           setLoading={setLoading}
