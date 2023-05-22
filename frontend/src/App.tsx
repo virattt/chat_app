@@ -14,6 +14,7 @@ export const App = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const webSocket = useRef<ReconnectingWebSocket | null>(null);
   const [loading, setLoading] = useState(false);
+  const [debugMessage, setDebugMessage] = useState<string>(""); // TODO (virat) render debug message
 
   // Set up websocket connection when currentChatId changes
   useEffect(() => {
@@ -22,8 +23,14 @@ export const App = () => {
       webSocket.current.onmessage = (event) => {
         setLoading(false)
         const data = JSON.parse(event.data);
-        const newMessage = {sender: 'AI', content: data['message']};
-        onNewUserMessage(newMessage);
+        if (data.type === "debug") {
+          // Replace newline characters with <br /> tags
+          const formattedToken = data.message.replace(/\n/g, '<br />');
+          setDebugMessage(prevMessage => prevMessage + formattedToken);
+        } else {
+          const newMessage = {sender: 'AI', content: data['message']};
+          onNewUserMessage(newMessage);
+        }
       };
 
       webSocket.current.onclose = () => {
@@ -65,6 +72,8 @@ export const App = () => {
         selectedChatId={currentChatId}
       />
       <ChatContainer>
+        {/* Render each message, using dangerouslySetInnerHTML to insert the <br /> tags */}
+        {/*<p dangerouslySetInnerHTML={{__html: debugMessage}}/>*/}
         <ToastContainer/>
         <ChatBox messages={messages} isLoading={loading}/>
         <ChatInput

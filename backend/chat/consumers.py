@@ -1,15 +1,10 @@
 import json
 import os
-import sys
-from typing import Optional, Any, Dict, List
-from uuid import UUID
 
 import django
-from asgiref.sync import async_to_sync
-from langchain.callbacks.base import AsyncCallbackHandler
-from langchain.schema import BaseMessage
 
 from chat.agents.agent_factory import AgentFactory
+from chat.agents.callbacks.debug_message_callback_handler import DebugMessageCallbackHandler
 from chat.messages.chat_message_repository import ChatMessageRepository
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
@@ -39,7 +34,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             tool_names=["llm-math"],
             chat_id=chat_id,
             streaming=True,
-            callback_handlers=[MyCustomHandler(self)],
+            callback_handlers=[DebugMessageCallbackHandler(self)],
         )
 
         await self.accept()
@@ -56,14 +51,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         response = await self.message_agent(message, chat_id)
 
         # Send the response from the OpenAI Chat API to the frontend client
-        await self.send(text_data=json.dumps({'message': response}))
+        await self.send(text_data=json.dumps({'message': response, 'type': 'answer'}))
 
     async def message_agent(self, message: str, chat_id: str):
         # Save the user message to the database
         await self.chat_message_repository.save_message(message=message, sender=MessageSender.USER.value, chat_id=chat_id)
 
         # Call the agent
-        response = self.agent.run(message)
+        response = await self.agent.arun(message)
 
         # Save the AI message to the database
         await self.chat_message_repository.save_message(message=response, sender=MessageSender.AI.value, chat_id=chat_id)
@@ -72,32 +67,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     def my_callback(self, message):
         print("Callback received:", message)
-
-
-class MyCustomHandler(AsyncCallbackHandler):
-
-    def __init__(self, consumer):
-        self.consumer = consumer
-
-    async def on_chat_model_start(
-        self,
-        serialized: Dict[str, Any],
-        messages: List[List[BaseMessage]],
-        *,
-        run_id: UUID,
-        parent_run_id: Optional[UUID] = None,
-        **kwargs: Any
-    ) -> Any:
-        pass
-
-    async def on_llm_new_token(
-        self,
-        token: str,
-        *,
-        run_id: UUID,
-        parent_run_id: Optional[UUID] = None,
-        **kwargs: Any,
-    ) -> None:
-        sys.stdout.write(token)
-        sys.stdout.flush()
-        async_to_sync(self.consumer.send)(text_data=token)
