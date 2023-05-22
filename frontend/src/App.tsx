@@ -1,4 +1,4 @@
-// ChatApp.tsx
+// App.tsx
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Sidebar } from './components/chat/Sidebar';
@@ -8,26 +8,30 @@ import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { Message } from "./data/Message";
 import { ToastContainer } from 'react-toastify';
+import { ChatMenu } from "./components/chat/debug/ChatMenu";
+import { DebugDrawer } from "./components/chat/debug/DebugDrawer";
 
 export const App = () => {
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const webSocket = useRef<ReconnectingWebSocket | null>(null);
   const [loading, setLoading] = useState(false);
-  const [debugMessage, setDebugMessage] = useState<string>(""); // TODO (virat) render debug message
+  const [debugMessage, setDebugMessage] = useState<string>("");
+  const [debugMode, setDebugMode] = useState<boolean>(false);
 
   // Set up websocket connection when currentChatId changes
   useEffect(() => {
     if (currentChatId) {
       webSocket.current = new ReconnectingWebSocket(`ws://localhost:8000/ws/chat/${currentChatId}/`);
       webSocket.current.onmessage = (event) => {
-        setLoading(false)
         const data = JSON.parse(event.data);
         if (data.type === "debug") {
-          // Replace newline characters with <br /> tags
+          // Debug message received. Replace newline characters with <br /> tags
           const formattedToken = data.message.replace(/\n/g, '<br />');
           setDebugMessage(prevMessage => prevMessage + formattedToken);
         } else {
+          // Entire message received
+          setLoading(false)
           const newMessage = {sender: 'AI', content: data['message']};
           onNewUserMessage(newMessage);
         }
@@ -71,9 +75,8 @@ export const App = () => {
         onChatSelected={onChatSelected}
         selectedChatId={currentChatId}
       />
-      <ChatContainer>
-        {/* Render each message, using dangerouslySetInnerHTML to insert the <br /> tags */}
-        {/*<p dangerouslySetInnerHTML={{__html: debugMessage}}/>*/}
+      <ChatContainer debugMode={debugMode}>
+        <ChatMenu debugMode={debugMode} setDebugMode={setDebugMode}/>
         <ToastContainer/>
         <ChatBox messages={messages} isLoading={loading}/>
         <ChatInput
@@ -83,6 +86,7 @@ export const App = () => {
           setLoading={setLoading}
         />
       </ChatContainer>
+      {debugMode && <DebugDrawer message={debugMessage} debugMode={debugMode}/>}
     </AppContainer>
   );
 };
@@ -92,9 +96,9 @@ const AppContainer = styled.div`
   height: 100vh;
 `;
 
-const ChatContainer = styled.div`
+const ChatContainer = styled.div<{ debugMode: boolean }>`
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+  width: ${({debugMode}) => debugMode ? '70%' : '100%'};
+  transition: all 0.2s; // Smooth transition
 `;
