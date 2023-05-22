@@ -32,7 +32,7 @@ class DebugMessageCallbackHandler(AsyncCallbackHandler):
         **kwargs: Any,
     ) -> None:
         # When the LLM ends, add a new line so that debug messages are spaced with new lines.
-        await self.consumer.send(text_data=json.dumps({'message': '\n', 'type': 'debug'}))
+        await self.consumer.send(text_data=json.dumps({'message': '\n\n', 'type': 'debug'}))
 
     async def on_chat_model_start(
         self, serialized: Dict[str, Any],
