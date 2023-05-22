@@ -1,6 +1,7 @@
 from typing import List
 
 from langchain.agents import initialize_agent, load_tools, AgentType, AgentExecutor
+from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 
@@ -18,9 +19,16 @@ class AgentFactory:
         self,
         tool_names: List[str],
         chat_id: str = None,
+        streaming=False,
+        callback_handlers: List[BaseCallbackHandler] = None,
     ) -> AgentExecutor:
-        # Define the LLM that the tools will use
-        llm = ChatOpenAI(temperature=0, openai_api_key=settings.openai_api_key, verbose=True)
+        # Instantiate the OpenAI LLM
+        llm = ChatOpenAI(
+            temperature=0,
+            openai_api_key=settings.openai_api_key,
+            streaming=streaming,
+            callbacks=callback_handlers,
+        )
 
         # Load the Tools that the Agent will use
         tools = load_tools(tool_names, llm=llm)
@@ -28,13 +36,10 @@ class AgentFactory:
         # Load the memory and populate it with any previous messages
         memory = await self._load_agent_memory(chat_id)
 
-        # Define the LLM that the agent will use
-        agent_llm = ChatOpenAI(temperature=0, openai_api_key=settings.openai_api_key, verbose=True)
-
         # Initialize and return the agent
         return initialize_agent(
             tools=tools,
-            llm=agent_llm,
+            llm=llm,
             agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
             verbose=True,
             memory=memory
