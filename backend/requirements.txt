@@ -23,7 +23,7 @@ greenlet==2.0.2
 hyperlink==21.0.0
 idna==3.4
 incremental==22.10.0
-langchain==0.0.166
+langchain==0.0.176
 lxml==4.9.2
 marshmallow==3.19.0
 marshmallow-enum==1.5.1
