@@ -7,7 +7,6 @@ import { ChatInput } from "./components/chat/ChatInput";
 import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { Message } from "./data/Message";
-import { ToastContainer } from 'react-toastify';
 import { ChatMenu } from "./components/chat/debug/ChatMenu";
 import { DebugDrawer } from "./components/chat/debug/DebugDrawer";
 
@@ -33,7 +32,7 @@ export const App = () => {
           // Entire message received
           setLoading(false)
           const newMessage = {sender: 'AI', content: data['message']};
-          onNewUserMessage(newMessage);
+          setMessages(prevMessages => [...prevMessages, newMessage]);
         }
       };
 
@@ -57,8 +56,19 @@ export const App = () => {
     setCurrentChatId(chatId);
   };
 
-  const onNewUserMessage = (message: Message) => {
+  const onNewUserMessage = (chatId: string, message: Message) => {
+    webSocket.current?.send(
+      JSON.stringify({
+        message: message.content,
+        chat_id: chatId,
+      })
+    );
     setMessages(prevMessages => [...prevMessages, message]);
+    setLoading(true); // Set loading to true when sending a message
+  };
+
+  const onNewChatCreated = (chatId: string) => {
+    onChatSelected(chatId)
   };
 
   const fetchMessages = (currentChatId: string | null) => {
@@ -77,10 +87,10 @@ export const App = () => {
       />
       <ChatContainer debugMode={debugMode}>
         <ChatMenu debugMode={debugMode} setDebugMode={setDebugMode}/>
-        <ToastContainer/>
         <ChatBox messages={messages} isLoading={loading}/>
         <ChatInput
           onNewUserMessage={onNewUserMessage}
+          onNewChatCreated={onNewChatCreated}
           webSocket={webSocket}
           chatId={currentChatId}
           setLoading={setLoading}

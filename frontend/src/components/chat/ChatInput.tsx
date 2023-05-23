@@ -4,17 +4,16 @@ import React, { MutableRefObject, useState } from 'react';
 import styled from 'styled-components';
 import ReconnectingWebSocket from "reconnecting-websocket";
 import { Message } from "../../data/Message";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 type ChatInputProps = {
-  onNewUserMessage: (message: Message) => void;
+  onNewUserMessage: (chatId: string, message: Message) => void;
+  onNewChatCreated: (chatId: string) => void;
   setLoading: (isLoading: boolean) => void;
   webSocket: MutableRefObject<ReconnectingWebSocket | null>;
   chatId: string | null;
 };
 
-export const ChatInput: React.FC<ChatInputProps> = ({onNewUserMessage, webSocket, chatId, setLoading}) => {
+export const ChatInput: React.FC<ChatInputProps> = ({onNewUserMessage, onNewChatCreated, chatId}) => {
     const [message, setMessage] = useState('');
 
     const handleSubmit = (event: React.FormEvent) => {
@@ -24,25 +23,32 @@ export const ChatInput: React.FC<ChatInputProps> = ({onNewUserMessage, webSocket
 
       if (chatId) {
         // If there is a chatId, just send the message.
-        sendWebSocketMessage(chatId);
+        const newMessage = {sender: 'USER', content: message};
+        onNewUserMessage(chatId, newMessage)
       } else {
         // If there is no chatId, create a new chat.
-        toast.error('Select or create a Chat first.');
+        createChat()
       }
+      setMessage(''); // Clear the input message
     }
 
-    // Function for sending a message through the WebSocket connection.
-    const sendWebSocketMessage = (id: string) => {
-      webSocket.current?.send(
-        JSON.stringify({
-          message: message,
-          chat_id: id,
-        })
-      );
-      const newMessage = {sender: 'User', content: message};
-      onNewUserMessage(newMessage); // Notify any listeners (e.g. App.tsx) that a new message was sent
-      setMessage(''); // Clear the input message
-      setLoading(true); // Set loading to true when sending a message
+    const createChat = () => {
+      fetch('http://localhost:8000/api/chats/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: 'New Chat'}) // Adjust this as necessary.
+      })
+        .then((response) => response.json())
+        .then((newChat) => {
+          // Update listeners that a new chat was created.
+          onNewChatCreated(newChat.id)
+
+          // Send the message after a timeout to ensure that the Chat has been created
+          setTimeout(function () {
+            // This block of code will be executed after 0.5 seconds
+            onNewUserMessage(newChat.id, {sender: 'USER', content: message})
+          }, 500);
+        });
     };
 
     return (

@@ -4,12 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import SettingsModal from "./SettingsModal";
 import { formatDate } from "../../utils/DateFormatter";
-
-type Chat = {
-  id: string;
-  name: string;
-  created_at: string,
-};
+import { Chat } from "../../types/chat";
 
 type SidebarProps = {
   onChatSelected: (chatId: string | null) => void;
