@@ -81,20 +81,11 @@ export const App = () => {
 
   return (
     <AppContainer>
-      <Sidebar
-        onChatSelected={onChatSelected}
-        selectedChatId={currentChatId}
-      />
+      <Sidebar onChatSelected={onChatSelected} selectedChatId={currentChatId}/>
       <ChatContainer debugMode={debugMode}>
         <ChatMenu debugMode={debugMode} setDebugMode={setDebugMode}/>
         <ChatBox messages={messages} isLoading={loading}/>
-        <ChatInput
-          onNewUserMessage={onNewUserMessage}
-          onNewChatCreated={onNewChatCreated}
-          webSocket={webSocket}
-          chatId={currentChatId}
-          setLoading={setLoading}
-        />
+        <ChatInput onNewUserMessage={onNewUserMessage} onNewChatCreated={onNewChatCreated} chatId={currentChatId}/>
       </ChatContainer>
       {debugMode && <DebugDrawer message={debugMessage} debugMode={debugMode}/>}
     </AppContainer>

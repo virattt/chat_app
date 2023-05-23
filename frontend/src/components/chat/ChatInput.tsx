@@ -1,15 +1,12 @@
 // ChatInput.tsx
 
-import React, { MutableRefObject, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import ReconnectingWebSocket from "reconnecting-websocket";
 import { Message } from "../../data/Message";
 
 type ChatInputProps = {
   onNewUserMessage: (chatId: string, message: Message) => void;
   onNewChatCreated: (chatId: string) => void;
-  setLoading: (isLoading: boolean) => void;
-  webSocket: MutableRefObject<ReconnectingWebSocket | null>;
   chatId: string | null;
 };
 
