@@ -160,6 +160,7 @@ const SettingsRow = styled.div`
   &:hover {
     background-color: #3f3f3f;
   }
+  border-top: 1px solid #3f3f3f;
   color: white;
   font-size: 14px;
   display: flex;
