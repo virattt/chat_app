@@ -4,7 +4,7 @@ import os
 import django
 
 from chat.agents.agent_factory import AgentFactory
-from chat.agents.callbacks.debug_message_callback_handler import DebugMessageCallbackHandler
+from chat.agents.callbacks import AsyncStreamingCallbackHandler
 from chat.messages.chat_message_repository import ChatMessageRepository
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
@@ -34,7 +34,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             tool_names=["llm-math"],
             chat_id=chat_id,
             streaming=True,
-            callback_handlers=[DebugMessageCallbackHandler(self)],
+            callback_handlers=[AsyncStreamingCallbackHandler(self)],
         )
 
         await self.accept()

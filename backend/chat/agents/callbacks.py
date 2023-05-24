@@ -7,7 +7,7 @@ from langchain.callbacks.base import AsyncCallbackHandler
 from langchain.schema import LLMResult, BaseMessage
 
 
-class DebugMessageCallbackHandler(AsyncCallbackHandler):
+class AsyncStreamingCallbackHandler(AsyncCallbackHandler):
 
     def __init__(self, consumer: AsyncWebsocketConsumer):
         self.consumer = consumer

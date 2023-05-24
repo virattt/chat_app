@@ -30,7 +30,6 @@ const Bubble = styled.div<{ isUser: boolean }>`
   font-size: 16px;
 `;
 
-
 const Content = styled.div`
   margin-left: 14px;
   line-height: 1.5;
