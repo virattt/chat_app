@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    command: >
+      bash -c "python manage.py migrate &&
+               daphne -b 0.0.0.0 -p 8000 project.asgi:application"
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    command: bash -c "npm install && npm start"
+    volumes:
+      - ./frontend:/frontend
+    ports:
+      - "3000:3000"
+
+       
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"

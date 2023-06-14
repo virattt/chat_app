@@ -11,6 +11,13 @@ To run the chat app, you need to:
 2. Run the backend server
 3. Run the frontend app
 
+## Using Docker 🐳
+If you have docker installed, it's even simpler:
+```bash
+docker-compose up
+```
+
+
 ### 1. Clone this GitHub repo 📁
 To clone this GitHub repo, open up your Terminal (MacOS) or Bash terminal (Windows) and navigate to wherever you want to save this repo on your local machine.  Then, run: 
 
